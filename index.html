@@ -1,0 +1,1231 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Feria de Talento Humano · Panel de evaluación</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;700;800&family=Figtree:wght@400;600;700&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      --ink: #1b1340;
+      --mut: #6b6591;
+      --bg: #f2efff;
+      --card: #fff;
+      --vio: #5b3df5;
+      --sun: #ffc23d;
+      --ok: #0fb57a;
+      --okbg: #cff7e5;
+      --ko: #f0386b;
+      --kobg: #ffd9e3;
+      --line: #e2dcff
+    }
+
+    * {
+      box-sizing: border-box
+    }
+
+    body {
+      margin: 0;
+      font: 16px/1.45 Figtree, system-ui, sans-serif;
+      color: var(--ink);
+      background: radial-gradient(900px 500px at 90% -10%, #d9ccff, transparent), radial-gradient(700px 400px at -10% 10%, #ffe6a8, transparent), var(--bg);
+      min-height: 100vh;
+      padding-bottom: 130px
+    }
+
+    h1,
+    h2,
+    h3 {
+      font-family: 'Bricolage Grotesque', Figtree, sans-serif;
+      margin: 0;
+      letter-spacing: -.02em
+    }
+
+    .wrap {
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 20px 16px
+    }
+
+    header {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 18px
+    }
+
+    .logo {
+      width: 52px;
+      height: 52px;
+      border-radius: 16px 16px 16px 4px;
+      background: linear-gradient(135deg, var(--vio), #a46bff);
+      display: grid;
+      place-items: center;
+      font-size: 26px;
+      box-shadow: 0 8px 20px #5b3df544
+    }
+
+    header h1 {
+      font-size: 1.6rem;
+      font-weight: 800
+    }
+
+    header p {
+      margin: 0;
+      color: var(--mut);
+      font-size: .9rem
+    }
+
+    #rol {
+      display: none;
+      background: var(--sun);
+      padding: 6px 12px;
+      border-radius: 999px;
+      font-weight: 700;
+      font-size: .8rem;
+      margin-left: auto
+    }
+
+    .steps {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 18px
+    }
+
+    .steps div {
+      flex: 1;
+      padding: 10px 12px;
+      border-radius: 14px;
+      background: #ffffffa0;
+      border: 1.5px solid var(--line);
+      font-weight: 700;
+      font-size: .85rem;
+      color: var(--mut)
+    }
+
+    .steps div.on {
+      background: var(--ink);
+      color: #fff;
+      border-color: var(--ink)
+    }
+
+    .steps div.done {
+      background: var(--okbg);
+      color: #067a50;
+      border-color: #9be8c8
+    }
+
+    .panel {
+      background: var(--card);
+      border-radius: 24px;
+      padding: 26px;
+      box-shadow: 0 18px 50px #3a1fb02a;
+      border: 1px solid var(--line)
+    }
+
+    .panel h2 {
+      font-size: 1.5rem;
+      margin-bottom: 4px
+    }
+
+    .sub {
+      color: var(--mut);
+      margin: 0 0 18px
+    }
+
+    label {
+      display: block;
+      font-weight: 700;
+      font-size: .85rem;
+      margin: 14px 0 6px
+    }
+
+    select,
+    input[type=password],
+    input[type=text],
+    textarea {
+      width: 100%;
+      padding: 14px;
+      border-radius: 14px;
+      border: 2px solid var(--line);
+      font: inherit;
+      color: var(--ink);
+      background: #faf9ff
+    }
+
+    select:focus,
+    input:focus,
+    textarea:focus {
+      outline: 3px solid #5b3df544;
+      border-color: var(--vio)
+    }
+
+    .btn {
+      border: 0;
+      cursor: pointer;
+      font: 700 1rem Figtree, sans-serif;
+      padding: 14px 22px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, var(--vio), #8a5cff);
+      color: #fff;
+      box-shadow: 0 8px 20px #5b3df544;
+      transition: transform .15s
+    }
+
+    .btn:hover:not(:disabled) {
+      transform: translateY(-2px)
+    }
+
+    .btn:disabled {
+      opacity: .45;
+      cursor: not-allowed
+    }
+
+    .btn.ghost {
+      background: none;
+      color: var(--vio);
+      box-shadow: none;
+      border: 2px solid var(--line)
+    }
+
+    .msg {
+      margin-top: 14px;
+      padding: 12px 14px;
+      border-radius: 12px;
+      font-weight: 600;
+      display: none
+    }
+
+    .msg.err {
+      display: block;
+      background: var(--kobg);
+      color: #a8123c
+    }
+
+    .msg.ok {
+      display: block;
+      background: var(--okbg);
+      color: #067a50
+    }
+
+    .hide {
+      display: none !important
+    }
+
+    .pymes {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      gap: 12px
+    }
+
+    .pyme {
+      position: relative;
+      text-align: left;
+      border: 2px solid var(--line);
+      background: #faf9ff;
+      border-radius: 18px;
+      padding: 16px;
+      cursor: pointer;
+      font: inherit;
+      color: var(--ink);
+      transition: .15s
+    }
+
+    .pyme {
+      --h: 260;
+      min-height: 104px;
+      border-left: 8px solid hsl(var(--h) 90% 55%)
+    }
+
+    .pyme:hover:not(:disabled) {
+      background: linear-gradient(135deg, hsl(var(--h) 92% 52%), hsl(calc(var(--h) + 35) 92% 60%));
+      border-color: transparent;
+      transform: translateY(-4px) scale(1.03);
+      box-shadow: 0 14px 30px hsl(var(--h) 90% 55% / .45);
+      color: #fff
+    }
+
+    .pyme b {
+      display: block;
+      font: 800 1.2rem/1.15 'Bricolage Grotesque', sans-serif;
+      color: hsl(var(--h) 85% 42%);
+      margin-bottom: 8px;
+      transition: .15s
+    }
+
+    .pyme em {
+      display: block;
+      font-style: normal;
+      font-weight: 700;
+      font-size: .8rem;
+      color: var(--mut)
+    }
+
+    .pyme span {
+      display: block;
+      font-size: .78rem;
+      color: var(--mut);
+      margin-top: 2px
+    }
+
+    .pyme:hover:not(:disabled) b,
+    .pyme:hover:not(:disabled) em,
+    .pyme:hover:not(:disabled) span {
+      color: #fff
+    }
+
+    .pyme.hecha {
+      background: var(--okbg);
+      border-color: #9be8c8;
+      border-left-color: var(--ok)
+    }
+
+    .pyme.hecha b {
+      color: #067a50
+    }
+
+    .pyme:disabled {
+      opacity: .45;
+      cursor: not-allowed;
+      background: repeating-linear-gradient(45deg, #f4f2fb, #f4f2fb 8px, #ebe8f7 8px, #ebe8f7 16px)
+    }
+
+    nav.cats {
+      position: sticky;
+      top: 0;
+      z-index: 5;
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding: 10px 0;
+      margin: 0 -4px 6px;
+      backdrop-filter: blur(10px)
+    }
+
+    nav.cats a {
+      flex: none;
+      text-decoration: none;
+      color: var(--ink);
+      background: #fff;
+      border: 2px solid var(--line);
+      border-radius: 999px;
+      padding: 7px 14px;
+      font-weight: 700;
+      font-size: .82rem
+    }
+
+    nav.cats a.full {
+      background: var(--okbg);
+      border-color: #9be8c8;
+      color: #067a50
+    }
+
+    .cat {
+      margin-top: 22px
+    }
+
+    .cat h3 {
+      font-size: 1.2rem;
+      margin-bottom: 10px
+    }
+
+    .crit {
+      display: grid;
+      grid-template-columns: 1fr 92px;
+      gap: 6px 14px;
+      align-items: center;
+      background: var(--card);
+      border: 2px solid var(--line);
+      border-left: 8px solid var(--line);
+      border-radius: 18px;
+      padding: 14px 16px;
+      margin-bottom: 10px;
+      transition: .2s
+    }
+
+    .crit.ok {
+      border-left-color: var(--ok)
+    }
+
+    .crit.ko {
+      border-left-color: var(--ko)
+    }
+
+    .crit .t {
+      font-weight: 700
+    }
+
+    .crit .t small {
+      display: block;
+      color: var(--mut);
+      font-weight: 400
+    }
+
+    .num {
+      width: 92px;
+      text-align: center;
+      font: 800 1.5rem 'Bricolage Grotesque', sans-serif !important;
+      padding: 8px !important;
+      border-radius: 14px !important
+    }
+
+    .ok .num {
+      background: var(--okbg);
+      color: #067a50;
+      border-color: #9be8c8
+    }
+
+    .ko .num {
+      background: var(--kobg);
+      color: #a8123c;
+      border-color: #ffb3c7
+    }
+
+    input[type=range] {
+      grid-column: 1/-1;
+      width: 100%;
+      accent-color: var(--vio);
+      height: 28px;
+      margin: 0
+    }
+
+    .chips {
+      grid-column: 1/-1;
+      display: flex;
+      gap: 6px
+    }
+
+    .chips button {
+      border: 0;
+      background: #efeaff;
+      color: var(--vio);
+      font-weight: 700;
+      border-radius: 999px;
+      padding: 4px 12px;
+      cursor: pointer;
+      font-size: .8rem
+    }
+
+    .chips button:hover {
+      background: var(--vio);
+      color: #fff
+    }
+
+    #dock {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: #fffffff2;
+      backdrop-filter: blur(14px);
+      border-top: 2px solid var(--line);
+      padding: 12px 16px;
+      z-index: 9
+    }
+
+    #dock .in {
+      max-width: 980px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      gap: 16px
+    }
+
+    .ring {
+      --p: 0;
+      --c: var(--vio);
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      background: conic-gradient(var(--c) calc(var(--p)*1%), #ece8ff 0);
+      display: grid;
+      place-items: center;
+      flex: none
+    }
+
+    .ring i {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background: #fff;
+      display: grid;
+      place-items: center;
+      font: 800 1.05rem 'Bricolage Grotesque', sans-serif;
+      font-style: normal
+    }
+
+    #dock .tx {
+      flex: 1;
+      font-size: .88rem;
+      color: var(--mut)
+    }
+
+    #dock .tx b {
+      color: var(--ink);
+      font-size: 1rem
+    }
+
+    .final {
+      text-align: center;
+      padding: 36px 20px
+    }
+
+    .final .big {
+      font: 800 4rem 'Bricolage Grotesque', sans-serif
+    }
+
+    .tabs {
+      display: flex;
+      gap: 6px;
+      background: #ffffffa0;
+      border: 1.5px solid var(--line);
+      border-radius: 16px;
+      padding: 5px;
+      margin-bottom: 14px
+    }
+
+    .tabs button {
+      flex: 1;
+      border: 0;
+      background: none;
+      font: 700 .95rem Figtree, sans-serif;
+      padding: 11px;
+      border-radius: 12px;
+      cursor: pointer;
+      color: var(--mut)
+    }
+
+    .tabs button.on {
+      background: var(--vio);
+      color: #fff;
+      box-shadow: 0 6px 16px #5b3df544
+    }
+
+    .kpis {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 12px;
+      margin-bottom: 16px
+    }
+
+    .kpi {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 16px
+    }
+
+    .kpi b {
+      display: block;
+      font: 800 2.2rem 'Bricolage Grotesque', sans-serif;
+      line-height: 1
+    }
+
+    .kpi span {
+      font-size: .82rem;
+      color: var(--mut)
+    }
+
+    .box {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      padding: 20px;
+      margin-bottom: 16px
+    }
+
+    .box h3 {
+      margin-bottom: 12px
+    }
+
+    .rk {
+      display: grid;
+      grid-template-columns: 150px 1fr 54px;
+      gap: 10px;
+      align-items: center;
+      margin-bottom: 10px;
+      font-size: .88rem
+    }
+
+    .rk .bar {
+      position: relative;
+      height: 22px;
+      border-radius: 999px;
+      background: #efeaff
+    }
+
+    .rk .bar i {
+      display: block;
+      height: 100%;
+      border-radius: 999px
+    }
+
+    .rk .bar:after {
+      content: "";
+      position: absolute;
+      left: calc(var(--a, 90) * 1%);
+      top: -3px;
+      bottom: -3px;
+      border-left: 2px dashed var(--ink);
+      font-size: .6rem;
+      padding-left: 2px;
+      color: var(--mut)
+    }
+
+    .rk .bar.np:after {
+      display: none
+    }
+
+    .rk b {
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-size: 1.1rem;
+      text-align: right
+    }
+
+    .rk small {
+      display: block;
+      color: var(--mut)
+    }
+
+    .heat {
+      overflow-x: auto
+    }
+
+    .heat table {
+      border-collapse: separate;
+      border-spacing: 4px;
+      width: 100%;
+      font-size: .85rem
+    }
+
+    .heat th {
+      font-weight: 700;
+      padding: 4px;
+      text-align: center
+    }
+
+    .heat th:first-child,
+    .heat td:first-child {
+      text-align: left;
+      white-space: nowrap
+    }
+
+    .heat td {
+      text-align: center;
+      padding: 9px 6px;
+      border-radius: 10px;
+      font-weight: 700
+    }
+
+    .heat td.ok {
+      background: var(--okbg);
+      color: #067a50
+    }
+
+    .heat td.ko {
+      background: var(--kobg);
+      color: #a8123c
+    }
+
+    .heat td.na {
+      background: #f4f2fb;
+      color: #aaa
+    }
+
+    .two {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px
+    }
+
+    .two .box {
+      margin: 0
+    }
+
+    .li {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 8px 0;
+      border-bottom: 1px dashed var(--line);
+      font-size: .88rem
+    }
+
+    .li b {
+      white-space: nowrap
+    }
+
+    .pend {
+      display: inline-block;
+      background: var(--sun);
+      border-radius: 999px;
+      padding: 3px 12px;
+      margin: 3px;
+      font-weight: 700;
+      font-size: .8rem
+    }
+
+    @media(max-width:700px) {
+      .two {
+        grid-template-columns: 1fr
+      }
+
+      .rk {
+        grid-template-columns: 96px 1fr 46px
+      }
+    }
+
+    @media(max-width:560px) {
+      .steps div {
+        font-size: .72rem;
+        padding: 8px
+      }
+
+      .panel {
+        padding: 18px
+      }
+
+      #dock .tx span {
+        display: none
+      }
+    }
+
+    @media(prefers-reduced-motion:reduce) {
+      * {
+        transition: none !important
+      }
+    }
+  
+    #tip{position:fixed;z-index:50;background:var(--ink);color:#fff;padding:8px 12px;border-radius:10px;font-size:.82rem;max-width:300px;pointer-events:none;display:none;box-shadow:0 8px 20px #0004}
+    [data-t]{cursor:help}
+    .ap{display:grid;grid-template-columns:30px 1fr auto;gap:10px;align-items:center;padding:8px 0;border-bottom:1px dashed var(--line)}
+    .ap .ix{width:28px;height:28px;border-radius:50%;background:var(--vio);color:#fff;display:grid;place-items:center;font-weight:800;font-size:.85rem}
+    .ap .nm i{color:var(--mut)}
+    label.chk{display:flex;align-items:center;gap:8px;margin:0;font-size:.85rem;cursor:pointer;white-space:nowrap}
+    label.chk input{width:22px;height:22px;accent-color:var(--ok)}
+    .ar{display:grid;grid-template-columns:1fr 1fr 150px auto 40px;gap:8px;align-items:center;margin-bottom:8px}
+    .ar.em{grid-template-columns:60px 1fr auto 40px}.ar.as{grid-template-columns:1fr 40px}
+    .ar input[type=text],.ar select,.box input[type=number]{padding:10px;border-radius:12px;border:2px solid var(--line);font:inherit;background:#faf9ff;width:100%}
+    .x{border:0;background:var(--kobg);border-radius:10px;height:40px;cursor:pointer}
+    details.ev{border:1px solid var(--line);border-radius:14px;padding:10px 14px;margin-bottom:8px;background:#faf9ff}
+    details.ev summary{cursor:pointer;font-size:.9rem}
+    .ar.ev{grid-template-columns:1fr 1fr 1.3fr 150px auto 40px}
+    .asp{background:#fff1c2;border:3px solid #f59e0b;color:#9a3412;border-radius:14px;padding:14px 16px;font-weight:800;font-size:1.1rem}
+    @media(max-width:700px){.ar.ev{grid-template-columns:1fr 1fr}.ar{grid-template-columns:1fr 1fr}.ar.em{grid-template-columns:50px 1fr}}
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <header>
+      <div class="logo">🧩</div>
+      <div>
+        <h1>Feria de Talento Humano</h1>
+        <p>Panel de evaluación para jurados</p>
+      </div>
+      <div id="rol">ADMINISTRADOR</div>
+    </header>
+    <div class="steps">
+      <div id="s1" class="on">1 · Identifícate</div>
+      <div id="s2">2 · Elige la empresa</div>
+      <div id="s3">3 · Califica</div>
+    </div>
+
+    <div class="tabs hide" id="tabs"><button id="tE" class="on">📝 Evaluar</button><button id="tD">📊 Dashboard</button><button id="tA" class="hide">⚙️ Administración</button>
+    </div>
+
+    <section id="v5" class="hide">
+      <div class="panel" style="margin-bottom:16px;display:flex;gap:12px;align-items:center;flex-wrap:wrap">
+        <div style="flex:1">
+          <h2>Resultados de la feria</h2>
+          <p class="sub" style="margin:0" id="dsub"></p>
+        </div><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn ghost" id="bRef">↻ Actualizar</button><button class="btn ghost hide" id="bDel" style="color:#a8123c;border-color:#ffb3c7">🗑 Borrar todo</button></div>
+      </div>
+      <div id="dash"></div>
+    </section>
+
+    <section id="v1" class="panel">
+      <h2>Hola, jurado 👋</h2>
+      <p class="sub">Escribe tu nombre e ingresa tu cédula. Solo los evaluadores registrados pueden ingresar.</p>
+      <label for="inst">Tu nombre completo</label><input id="inst" type="text" autocomplete="name"
+        placeholder="Ej: María Pérez">
+      <label for="ced">Número de cédula</label><input id="ced" type="password" inputmode="numeric" autocomplete="off"
+        placeholder="Sin puntos ni espacios">
+      <div style="margin-top:18px"><button class="btn" id="bIn">Validar y continuar</button></div>
+      <div id="m1" class="msg"></div>
+    </section>
+
+    <section id="v2" class="panel hide">
+      <h2 id="hola"></h2>
+      <p class="sub">Toca la empresa que vas a calificar.</p>
+      <div class="pymes" id="pymes"></div>
+      <div id="admEmp" class="hide" style="margin-top:18px"><div style="display:flex;gap:10px;flex-wrap:wrap"><button class="btn ghost" id="bEmp">✏️ Administrar empresas</button><button class="btn ghost" id="bEv">🧑‍⚖️ Administrar evaluadores</button><button class="btn ghost" id="bLoadEA">📥 Cargar empresas y aprendices del listado</button></div><div id="empBox" class="box hide" style="margin-top:12px"></div><div id="evBox" class="box hide" style="margin-top:12px"></div></div>
+      <div style="margin-top:18px"><button class="btn ghost" id="bOut">Cambiar de evaluador</button></div>
+      <div id="m2" class="msg"></div>
+    </section>
+
+    <section id="v3" class="hide">
+      <div class="panel">
+        <h2 id="tp"></h2>
+        <p class="sub" id="tsub"></p>
+      </div>
+      <div class="panel" id="apr" style="margin-top:16px"></div>
+      <div class="panel" id="miAsp" style="margin-top:16px"></div>
+      <h3 style="margin:24px 4px 6px">📋 Aspectos que se califican</h3>
+      <div id="crits"></div>
+      <div class="panel" style="margin-top:22px"><label for="obs" style="margin-top:0">Observaciones
+          (opcional)</label><textarea id="obs" rows="3" placeholder="Comentarios para esta empresa"></textarea>
+        <div id="m3" class="msg"></div>
+      </div>
+      <div id="dock">
+        <div class="in">
+          <div class="ring" id="ring"><i id="avg">–</i></div>
+          <div class="tx"><b id="prog"></b><br><span id="cnt"></span></div><button class="btn ghost"
+            id="bBack">Volver</button><button class="btn" id="bSave" disabled>Guardar evaluación</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="v6" class="hide">
+      <div class="panel" style="margin-bottom:16px"><h2>⚙️ Administración</h2><p class="sub" style="margin:0">Solo tú ves esta pestaña. Agrega, modifica o quita evaluadores, empresas y aspectos, y pulsa Guardar cambios.</p></div>
+      <div id="adm"></div>
+    </section>
+
+    <section id="v4" class="panel final hide">
+      <div class="big" id="fn"></div>
+      <h2 id="fr"></h2>
+      <p class="sub" id="fsub">La evaluación quedó guardada en Google Sheets.</p><button class="btn" id="bNext">Evaluar otra
+        empresa</button>
+    </section>
+  </div>
+
+  <div id="tip"></div>
+  <script>
+    const URL_APLICACION_WEB = "https://script.google.com/macros/s/AKfycbwms2tWoBjhArCkku7Fklwy1y-_0_8j-a6lD29FdbrK_0aoL0dSjXZFdTktq7bn4qNWxQ/exec";
+    const $ = id => document.getElementById(id);
+    const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+    const prom = a => a.length ? a.reduce((x, y) => x + y, 0) / a.length : 0;
+    let APR = 90, CRIT = [], AD = null; // nota aprobatoria y aspectos: los define el administrador en Sheets
+    let S = { ced: "", nombre: "", admin: false, inst: 0, pymes: [], apr: {}, exp: {}, pyme: null, notas: [], expl: [], paso: 1 };
+    const col = v => v >= APR ? "#0fb57a" : "#f0386b";
+
+    async function api(data) {
+      try {
+        const r = await fetch(URL_APLICACION_WEB, { method: "POST", redirect: "follow", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify(data) });
+        return await r.json();
+      } catch (e) { return { ok: false, mensaje: "Sin conexión con Google Sheets. Revisa internet y la URL /exec (si cambiaste el script, crea una versión nueva de la implementación)." }; }
+    }
+    function aplicar(r) {
+      if (r.aspectos) CRIT = r.aspectos.map(n => ({ nombre: n }));
+      if (r.aprobatoria) APR = +r.aprobatoria;
+      if (r.miAspecto !== undefined) S.aspecto = r.miAspecto;
+      if (r.pymes) S.pymes = r.pymes;
+      if (r.aprendices) S.apr = r.aprendices;
+      if (r.explicaron) S.exp = r.explicaron;
+    }
+    function msg(id, t, k) { const m = $(id); m.className = "msg " + (k || "err"); m.textContent = t; if (!t) m.className = "msg"; }
+    const VS = ["v1", "v2", "v3", "v4", "v5", "v6"];
+    function go(n) {
+      VS.forEach((v, i) => $(v).classList.toggle("hide", i + 1 !== n));
+      document.querySelector(".steps").classList.toggle("hide", n > 4);
+      $("tabs").classList.toggle("hide", n === 1);
+      $("tE").className = n <= 4 ? "on" : ""; $("tD").className = n === 5 ? "on" : "";
+      $("tA").className = (S.admin ? "" : "hide ") + (n === 6 ? "on" : "");
+      $("rol").style.display = S.admin && n > 1 ? "block" : "none";
+      if (n <= 4) S.paso = n;
+      [1, 2, 3].forEach(i => $("s" + i).className = i < Math.min(n, 4) ? "done" : (i === n ? "on" : ""));
+      scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    // ===== INGRESO =====
+    // Acceso temporal del administrador mientras el script de Google siga en la versión anterior: solo permite ver y probar la interfaz
+    const ADMIN_LOCAL = "79602545", EVAL_LOCAL = "12345678"; // EVAL_LOCAL: evaluador de prueba, solo funciona mientras el script esté en versión anterior
+    const ASP0 = ["El aprendiz presenta con claridad la evidencia solicitada", "Demuestra dominio del contenido trabajado", "Relaciona la evidencia con los procesos de talento humano", "Utiliza un lenguaje claro, técnico y pertinente al contexto", "Emplea recursos de apoyo visual o multimedia que fortalecen la comprensión", "Muestra seguridad al exponer y responde con claridad a las preguntas realizadas", "Se expresa con orden y estructura lógica", "Respeta los tiempos asignados para la presentación", "Escucha con atención y responde de manera respetuosa", "Reconoce fortalezas y oportunidades de mejora en su evidencia"];
+    const EMP0 = ["Tentación Global", "Creative Earrings", "La Catrina Gourmet", "Mordisquitos Snack", "Aurora Beauty", "Imperio de Licores", "Kalem Spa", "BLUMÍA", "K-New", "Camino del Progreso BIC", "Eterna Primavera S.A.S", "Talent Up S.A.S", "Beauty Essence", "K-New Dos"];
+    const LISTADO = [
+  [1,"Tentación Global",["Cristian Gama","Samuel Roncancio","Heidy Rojas","Danna Quiroz","Daniel Pérez","Yuliana Cano"]],
+  [2,"Creative Earrings",["Carol Dayana Siuta Hernández","Geraldin Ruiz Castrillón","Valentina Quiñones Cubides","Madelyne Marin Caro","Danna Yulieth Grimaldo Sanchez"]],
+  [3,"La Catrina Gourmet",["Mariana Bulla","Valentina Parada","Laura Huérfano","Melanny Enciso","Estefanía Osorio"]],
+  [4,"Mordisquitos Snack",["Dana Rojas","Vanessa Tabares","Valentina Rojas","Jennifer Rubiano","Angie Sánchez"]],
+  [5,"Aurora Beauty",["Valentina Jaramillo Avila","María Alejandra Bautista Gomez","Sergio Efraín Garzón Marciales","Olga Lucía Palacios Umbarila","María Camila Caicedo Rocha"]],
+  [6,"Imperio de Licores",["Valery Charlotte Rubiano Garcia"]],
+  [7,"Kalem Spa",["Valery Rubiano","Magaly Rios","Laura Tique","Kamila Pinto","Valery Robles"]],
+  [8,"BLUMÍA",["Miguel Ángel Buitrago Álvarez","José Andrés Rodríguez Infante","Angeline Sofía Cervantes Lauren","Susan Zharick Vásquez Wilches","Karol Vanessa Murillo Aldana"]],
+  [9,"K-New",["Paola Salazar","Carol Serrano","Mariana Blanco","Camila Cerinza"]],
+  [10,"Camino del Progreso BIC",["Angie Cubillo","Aura Ortiz","Naydely Escarpeta","Steven Fernández"]],
+  [11,"Eterna Primavera S.A.S",["Luna Judith Quintero Camargo","Nicol Valentina Villamil Lavede","Mariana Sofía Ballesteros Tapiero"]],
+  [12,"Talent Up S.A.S",["Niurkellys Urdaneta","Alexandra Lopez","Tania Rojas","Maria Paula Murillo","Luz Aleida Sutachan"]],
+  [13,"Beauty Essence",["Dana Carolina Galindo Castañeda","Mariana Montes Troncoso","Lina Mariana Ruiz Mesa","Dana Sophia Clavijo Gómez","Zara Melissa Rojas Rodríguez"]],
+  [14,"K-New Dos",["Emmy Mariana Blanco Mora"]]
+];
+    const apLocal = () => { try { const g = JSON.parse(localStorage.getItem("feriaTHlocal") || "null"); if (g && Object.keys(g).length) return g; } catch (e) { } const l = {}; LISTADO.forEach(x => l[x[0]] = x[2].slice()); return l; };
+    const JURADOS = [["DIEGO PEREZ","1105671487","Elaboración de documentos de procesos de talento humano"],
+  ["SOFIA FUQUENE","1019126262","Aplicar prácticas de protección ambiental, seguridad y salud en el trabajo"],
+  ["YAKELINE CALDERON","1065593515","Apoyo actividades de talento humano"],
+  ["DIEGO CARDONA","1088297708","Interactuar en lengua inglesa de forma oral y escrita"],
+  ["ELISABETH CASTILLO","528696461","Apoyo actividades de talento humano"],
+  ["MERCEDES SALAZAR","1102794919","Apoyo actividades de talento humano"],
+  ["ANDREA MARTINEZ","01234","Interactuar en lengua inglesa de forma oral y escrita"],
+  ["FERNEY GUEVARA","179602545","Operar herramientas"],
+  ["NAJIA SALAME","56789","Ejercer derechos fundamentales"],
+  ["AGUILAR MONTAÑO SEBASTIAN ALEJANDRO","1044210322","Cronograma"],
+  ["ANGARITA VILLAMIZAR CAMILA ANDREA","1233505139","Requisición de personal"],
+  ["AREVALO ESTUPIÑAN LIZETH VALENTINA","1011102650","Perfil de cargos"],
+  ["CANCINO RODRIGUEZ MAYI SOLED","1005162129","Hoja de vida"],
+  ["CIFUENTES MARTINEZ ESTEFANY CAMILA","1021664207","Matriz comparativa evaluacion de candidatos"],
+  ["CUDRIZ GARCIA LAURA VALENTINA","1028481514","Verificacion de referencias"],
+  ["DUARTE ROJAS KAREN JULIANA","1097664622","Base de datos"],
+  ["ENRIQUEZ DOMINGUEZ DAVID ALBERTO","1013647705","Asistencia"],
+  ["ESPEJO TORRES MAYCOL ESNEYDER","1010760647","Entrevista estructurada"],
+  ["GALVIS GOMEZ ADRIANA CAMILA","1019605626","Remisión a examenes ocupacionales"],
+  ["GARZON ROJAS SARA SOFA","1031653988","Lista de chequeo documentos"],
+  ["GOMEZ BELTRAN MAYRA ALEJANDRA","1141325377","Entrega epp y dotación"],
+  ["HERNANDEZ BERMUDEZ LAURA LIZETH","1013603412","Lista chequeo inducción"],
+  ["IBAÑEZ HERRERA SARA SOFIA","1033719470","Encuesta de satisfacción"],
+  ["JIMÉNEZ FONSECA YARLEDIS","1192812044","Evaluación de desempeño"],
+  ["LOPEZ CUELLAR SARAY STEFANNY","1141330049","Plan de mejoramiento"],
+  ["MONTERO ROMERO SARA CAMILA","1030581843","Plan de capacitación"],
+  ["MORA VEGA KAROL XIMENA","1013103801","Formulario encuesta de satisfacción"],
+  ["MUÑOZ OVALLE SARA SOFIA","1022364279","Presupuesto"],
+  ["PARRA LIZETH JUBELY","1000780706","Matriz de diagnostico y analisis de brechas"],
+  ["PAZ GUTIERREZ DIANA MARIA","52537103","Plan de desarrollo"],
+  ["PEREZ CAMPOS EDWIN FELIPE","1022952481","Plan de bienestar"],
+  ["PULGARIN MEDINA JUSTYN ALINA","1027280157","Cronograma"],
+  ["RAMIREZ CASTILLO EVELING XIMENA","1031819436","Requisición de personal"],
+  ["REAL PEDRAZA MARIA FERNANDA","1013120253","Perfil de cargos"],
+  ["SANCHEZ CARVAJAL LAURA CATALINA","1014736762","Hoja de vida"],
+  ["SILVA RODRIGUEZ RYAN DUBAN","1012376083","Matriz comparativa evaluacion de candidatos"],
+  ["SORACA TURIZO ISABELLA","1052041964","Verificacion de referencias"],
+  ["SUAREZ GONZALEZ LAURA VALENTINA","1014205835","Base de datos"],
+  ["JUEZ TIGUAQUE NICOLL LISETH","1024492381","Asistencia"]];
+    // Mezcla el listado de jurados con la lista de evaluadores (agrega nuevos, actualiza aspecto; al administrador solo le pone el aspecto)
+    function mezclarJurados(lista) {
+      let nuevos = 0, act = 0;
+      JURADOS.forEach(j => {
+        const e = lista.find(x => String(x.cedula).replace(/\D/g, "") === j[1]);
+        if (e) { e.aspecto = j[2]; if (e.rol !== "ADMIN") e.nombre = j[0]; act++; }
+        else { lista.push({ numero: Math.max(0, ...lista.map(x => +x.numero || 0)) + 1, nombre: j[0], cedula: j[1], activo: true, rol: "EVALUADOR", aspecto: j[2] }); nuevos++; }
+      });
+      return { nuevos, act };
+    }
+    const evLocal = () => { try { const g = JSON.parse(localStorage.getItem("feriaTHlocalEv") || "null"); if (g && g.length) return g; } catch (e) { } const l = [{ numero: 0, nombre: "Wolfan Ferney Guevara Monrroy", cedula: ADMIN_LOCAL, activo: true, rol: "ADMIN", aspecto: "" }]; mezclarJurados(l); l.push({ numero: 99, nombre: "Evaluador de prueba", cedula: EVAL_LOCAL, activo: true, rol: "EVALUADOR", aspecto: "Dominio de los productos de la feria" }); return l; };
+    const enLocal = ced => ced === ADMIN_LOCAL || evLocal().some(e => e.activo && String(e.cedula).replace(/\D/g, "") === ced);
+    const empLocal = () => { try { const g = JSON.parse(localStorage.getItem("feriaTHlocalEmp") || "null"); if (g && g.length) return g; } catch (e) { } return EMP0.map((n, i) => ({ numero: i + 1, nombre: n, activa: true })); };
+    function entrarLocal(ced, nombre) {
+      const e0 = evLocal().find(e => e.activo && String(e.cedula).replace(/\D/g, "") === ced), admin = ced === ADMIN_LOCAL || !!(e0 && e0.rol === "ADMIN");
+      S = { ...S, ced, nombre, admin, inst: e0 ? +e0.numero || 0 : (admin ? 0 : 99), local: true, aspecto: e0 ? e0.aspecto || "" : "" };
+      aplicar({ aspectos: ASP0, aprobatoria: 90, pymes: empLocal().filter(e => e.activa).map(e => ({ numero: e.numero, nombre: e.nombre, evaluada: false })), aprendices: apLocal(), explicaron: {} });
+      pintarPymes(); go(2);
+      msg("m2", `Modo temporal (${admin ? "administrador" : "evaluador de prueba"}): el script de Google sigue en la versión anterior. Puedes probar la app, pero nada se guarda en Sheets hasta actualizar el script.`);
+    }
+    $("bIn").onclick = async () => {
+      const ced = $("ced").value.trim(), nombre = $("inst").value.trim().replace(/\s+/g, " ");
+      if (nombre.length < 3) return msg("m1", "Escribe tu nombre completo.");
+      if (!/^\d{5,12}$/.test(ced)) return msg("m1", "Escribe tu cédula solo con números.");
+      $("bIn").disabled = true; $("bIn").textContent = "Validando…"; msg("m1", "");
+      const r = await api({ action: "login", nombre, cedula: ced });
+      $("bIn").disabled = false; $("bIn").textContent = "Validar y continuar";
+      const VIEJO = "El script de Google sigue en la versión anterior. Pega el código nuevo en Apps Script, ejecuta configurarHojas y crea una versión nueva de la implementación (Implementar → Administrar implementaciones → lápiz → Versión nueva).";
+      if (!r.ok) {
+        let v3 = true; try { const g = await (await fetch(URL_APLICACION_WEB)).json(); v3 = /v3/.test(g.mensaje || ""); } catch (e) { }
+        if (!v3 && enLocal(ced)) return entrarLocal(ced, nombre);
+        return msg("m1", v3 ? (r.mensaje || "Cédula no válida.") : VIEJO);
+      }
+      if (r.admin === undefined) return enLocal(ced) ? entrarLocal(ced, nombre) : msg("m1", VIEJO);
+      S = { ...S, local: false, ced, nombre, admin: !!r.admin, inst: +r.evaluador || 0 }; aplicar(r);
+      pintarPymes(); go(2);
+    };
+    $("bOut").onclick = () => { S.admin = false; S.local = false; S.ced = ""; msg("m2", ""); $("ced").value = ""; msg("m1", ""); go(1); };
+
+    function pintarPymes() {
+      $("hola").textContent = `Bienvenido(a), ${S.nombre} 👋`; $("admEmp").classList.toggle("hide", !S.admin); $("pymes").innerHTML = "";
+      if (!S.pymes.length) $("pymes").innerHTML = "<p class='sub'>No hay empresas activas. Pídele al administrador que las registre.</p>";
+      S.pymes.forEach(p => {
+        const n = +p.numero, b = document.createElement("button"), na = (S.apr[n] || []).filter(Boolean).length;
+        b.className = "pyme" + (p.evaluada ? " hecha" : ""); b.style.setProperty("--h", (n * 30 + 250) % 360);
+        b.innerHTML = `<b>${esc(p.nombre)}</b><em>Empresa No ${n}</em><span>${na} aprendiz${na === 1 ? "" : "es"}${p.evaluada ? " · ✔ evaluada · editar" : ""}</span>`;
+        b.onclick = () => abrir(n, p); $("pymes").appendChild(b);
+      });
+    }
+
+    // ===== EVALUAR UNA EMPRESA =====
+    const key = () => `feriaTH:${S.ced}:${S.pyme}`;
+    const guardarBorrador = () => { try { localStorage.setItem(key(), JSON.stringify({ notas: S.notas, expl: S.expl })); } catch (e) { } };
+    function abrir(n, p) {
+      S.pyme = n; S.notas = Array(CRIT.length).fill(null);
+      S.expl = Array.from({ length: 6 }, (_, i) => !!(S.exp[n] || [])[i]);
+      try { const d = JSON.parse(localStorage.getItem(key()) || "null"); if (d) { if (d.notas && d.notas.length === CRIT.length) S.notas = d.notas; if (d.expl) S.expl = d.expl; } } catch (e) { }
+      $("tp").textContent = `Empresa No ${n} · ${p.nombre}`;
+      $("tsub").textContent = `Califica cada aspecto de 1 a 100. Desde ${APR} aprueba (verde); por debajo pierde (rojo).`;
+      $("obs").value = ""; msg("m3", ""); pintarApr(); pintarAsp(); $("crits").innerHTML = "";
+      CRIT.forEach((c, i) => {
+        const d = document.createElement("div"); d.className = "crit"; d.id = "c" + i;
+        d.innerHTML = `<div class="t">${esc(c.nombre)}<small id="h${i}">Sin calificar</small></div>
+        <input class="num" id="n_${i}" type="number" min="1" max="100" placeholder="–" aria-label="${esc(c.nombre)}">
+        <input type="range" min="1" max="100" value="${S.notas[i] || APR}" id="r${i}" aria-label="${esc(c.nombre)}">
+        <div class="chips">${[60, 75, APR, 100].map(v => `<button type="button" data-v="${v}">${v}</button>`).join("")}</div>`;
+        d.querySelector(".num").oninput = e => poner(i, e.target.value);
+        d.querySelector("input[type=range]").oninput = e => poner(i, e.target.value);
+        d.querySelectorAll("button").forEach(b => b.onclick = () => poner(i, b.dataset.v));
+        $("crits").appendChild(d);
+      });
+      S.notas.forEach((v, i) => { if (v) pintar(i); });
+      resumen(); go(3);
+    }
+    // Aspecto asignado: cada evaluador ve solo el suyo (lo define el administrador en la lista de evaluadores)
+    function pintarAsp() {
+      $("miAsp").innerHTML = `<h3>🎯 Tu aspecto a evaluar</h3>` + (S.aspecto ? `<div class="asp">${esc(S.aspecto)}</div><p class="sub" style="margin:8px 0 0">Este es el aspecto que te asignó el administrador.</p>` : `<p class="sub" style="margin:0">Aún no tienes un aspecto asignado. Pídeselo al administrador.</p>`);
+    }
+    // Aprendices: el administrador los escribe; los demás evaluadores solo los ven y marcan si explicaron
+    function pintarApr() {
+      const nom = (S.apr[S.pyme] || []).concat(Array(6).fill("")).slice(0, 6);
+      $("apr").innerHTML = `<h3>👥 Aprendices de la empresa</h3>
+        <p class="sub" style="margin:4px 0 8px">${S.admin ? "Como administrador escribes los 6 aprendices; los demás evaluadores solo los ven." : "Marca la casilla si el aprendiz explicó los productos de la feria."}</p>
+        ${nom.map((n, i) => `<div class="ap"><span class="ix">${i + 1}</span>
+          ${S.admin ? `<input type="text" data-n="${i}" value="${esc(n)}" placeholder="Nombre del aprendiz ${i + 1}">` : `<span class="nm">${n ? esc(n) : "<i>Sin asignar</i>"}</span>`}
+          <label class="chk"><input type="checkbox" data-e="${i}" ${S.expl[i] ? "checked" : ""} ${!S.admin && !n ? "disabled" : ""}> Explicó los productos</label></div>`).join("")}
+        ${S.admin ? `<div style="margin-top:12px"><button class="btn ghost" id="bApr">💾 Guardar aprendices</button></div>` : ""}<div id="mA" class="msg"></div>`;
+      $("apr").querySelectorAll("[data-e]").forEach(c => c.onchange = () => { S.expl[+c.dataset.e] = c.checked; guardarBorrador(); });
+      if (S.admin) $("bApr").onclick = async () => {
+        const nombres = [...$("apr").querySelectorAll("[data-n]")].map(i => i.value.trim().replace(/\s+/g, " "));
+        if (S.local) { S.apr[S.pyme] = nombres; try { localStorage.setItem("feriaTHlocal", JSON.stringify(S.apr)); } catch (e) { } return msg("mA", "Guardado solo en este navegador (modo temporal): no llega a Sheets hasta actualizar el script.", "ok"); }
+        $("bApr").disabled = true; const r = await api({ action: "guardarAprendices", cedula: S.ced, pyme: S.pyme, nombres }); $("bApr").disabled = false;
+        if (!r.ok) return msg("mA", r.mensaje || "No se pudo guardar.");
+        S.apr[S.pyme] = nombres; msg("mA", "Aprendices guardados en Google Sheets ✔", "ok");
+      };
+    }
+    function poner(i, v) {
+      v = v === "" ? null : Math.min(100, Math.max(1, Math.round(+v)));
+      S.notas[i] = v; pintar(i); resumen(); guardarBorrador();
+    }
+    function pintar(i) {
+      const v = S.notas[i], d = $("c" + i);
+      d.className = "crit" + (v == null ? "" : v >= APR ? " ok" : " ko");
+      if (document.activeElement !== $("n_" + i)) $("n_" + i).value = v ?? "";
+      if (v != null) $("r" + i).value = v;
+      $("h" + i).textContent = v == null ? "Sin calificar" : v >= APR ? "Aprueba ✔" : `Pierde · necesita ≥ ${APR}`;
+    }
+    function resumen() {
+      const hechas = S.notas.filter(v => v != null), n = hechas.length, tot = CRIT.length;
+      const avg = n ? prom(hechas) : 0, verdes = hechas.filter(v => v >= APR).length;
+      $("avg").textContent = n ? Math.round(avg) : "–";
+      $("ring").style.setProperty("--p", avg); $("ring").style.setProperty("--c", !n ? "#5b3df5" : col(avg));
+      $("prog").textContent = `${n} de ${tot} calificados`;
+      $("cnt").textContent = `${verdes} en verde · ${n - verdes} en rojo`;
+      $("bSave").disabled = n < tot;
+    }
+    $("bBack").onclick = () => { pintarPymes(); go(2); };
+    $("bSave").onclick = async () => {
+      $("bSave").disabled = true; $("bSave").textContent = "Guardando…"; msg("m3", "");
+      const r = S.local ? (() => { const p = Math.round(prom(S.notas) * 10) / 10; return { ok: true, promedio: p, resultado: p >= APR ? "APRUEBA" : "NO APRUEBA" }; })() : await api({ action: "guardar", nombre: S.nombre, cedula: S.ced, pyme: S.pyme, notas: S.notas, explicaron: S.expl, observaciones: $("obs").value.trim() });
+      $("bSave").textContent = "Guardar evaluación"; $("bSave").disabled = false;
+      if (!r.ok) return msg("m3", r.mensaje || "No se pudo guardar.");
+      try { localStorage.removeItem(key()); } catch (e) { }
+      S.pymes.find(x => +x.numero === S.pyme).evaluada = true; S.exp[S.pyme] = S.expl.slice();
+      $("fsub").textContent = S.local ? "Modo temporal: simulación, no se guardó en Sheets." : "La evaluación quedó guardada en Google Sheets."; $("fn").textContent = r.promedio; $("fn").style.color = col(r.promedio);
+      $("fr").textContent = `Empresa No ${S.pyme}: ${r.resultado}`; go(4);
+    };
+    $("bNext").onclick = () => { pintarPymes(); go(2); };
+
+    // ===== DASHBOARD =====
+    $("tE").onclick = () => { pintarPymes(); go(S.paso === 3 ? 3 : 2); };
+    $("tD").onclick = cargarDash; $("bRef").onclick = cargarDash;
+    async function cargarDash() {
+      go(5); $("bRef").disabled = true; $("bRef").textContent = "Actualizando…"; $("bDel").classList.toggle("hide", !S.admin);
+      $("dash").innerHTML = "<div class='panel'>Cargando resultados…</div>";
+      const [b, r] = await Promise.all([api({ action: "actualizar", cedula: S.ced }), api({ action: "dashboard", cedula: S.ced })]);
+      $("bRef").disabled = false; $("bRef").textContent = "↻ Actualizar";
+      if (b.ok) aplicar(b);
+      if (!r.ok) { $("dsub").textContent = ""; return $("dash").innerHTML = `<div class='panel'><div class='msg err'>${esc(r.mensaje || "No se pudieron cargar los resultados.")}</div></div>`; }
+      aplicar(r); $("dsub").textContent = "Datos en vivo desde Google Sheets · actualizado a las " + new Date().toLocaleTimeString();
+      pintarDash(r.filas);
+    }
+    $("bDel").onclick = async () => {
+      if (!S.admin) return;
+      if (prompt("Esto borra TODAS las evaluaciones y las marcas de «explicó los productos» en Google Sheets.\nPara confirmar escribe BORRAR") !== "BORRAR") return;
+      const ap = confirm("¿Borrar también la lista de aprendices?\nAceptar = sí, borrarla · Cancelar = conservarla");
+      $("bDel").disabled = true; const r = await api({ action: "borrarTodo", cedula: S.ced, confirmacion: "BORRAR", incluirAprendices: ap }); $("bDel").disabled = false;
+      if (!r.ok) return alert(r.mensaje || "No se pudo borrar.");
+      Object.keys(localStorage).filter(k => k.startsWith("feriaTH:")).forEach(k => localStorage.removeItem(k));
+      S.exp = {}; if (ap) S.apr = {}; cargarDash();
+    };
+    function pintarDash(filas) {
+      if (!filas.length) return $("dash").innerHTML = "<div class='panel final'><div class='big'>🕒</div><h2>Aún no hay evaluaciones</h2><p class='sub'>Cuando los evaluadores guarden calificaciones, aquí verás los resultados.</p></div>";
+      const total = S.pymes.length, G = {}; filas.forEach(f => (G[f.pyme] = G[f.pyme] || []).push(f));
+      const R = Object.keys(G).map(k => { const a = G[k]; return { n: +k, nom: (S.pymes.find(p => +p.numero === +k) || {}).nombre || a[0].pymeNombre, ev: a.length, avg: prom(a.map(x => x.promedio)),
+        cat: CRIT.map((c, i) => prom(a.map(x => x.notas[i]))), verdes: prom(a.map(x => x.notas.filter(v => v >= APR).length)) }; }).sort((a, b) => b.avg - a.avg);
+      const aprueban = R.filter(r => r.avg >= APR).length, pend = S.pymes.filter(p => !G[p.numero]);
+      const critAvg = CRIT.map((c, i) => ({ n: c.nombre, v: prom(filas.map(f => f.notas[i])) })).sort((a, b) => b.v - a.v);
+      const porInst = {}; filas.forEach(f => (porInst[f.inst] = porInst[f.inst] || new Set()).add(f.pyme));
+      const li = a => a.map(x => `<div class="li"><span>${esc(x.n)}</span><b style="color:${col(x.v)}">${x.v.toFixed(1)}</b></div>`).join("");
+      const todas = !S.admin ? "" : `<div class="box" style="margin-top:16px"><h3>🗂 Todas las evaluaciones <small style="font-weight:400;color:var(--mut)">(solo administrador)</small></h3>${filas.map(f => `<details class="ev"><summary><b>${esc(f.evaluador || "")}</b> (${esc(f.digitado || "")}) → Empresa No ${f.pyme} · ${esc(f.pymeNombre)} · <b style="color:${col(f.promedio)}">${(+f.promedio).toFixed(1)}</b> · explicaron: ${esc(f.explicaron || "–")} · aspecto: ${esc(f.aspecto || "–")}</summary>
+        ${CRIT.map((c, i) => `<div class="li"><span>${i + 1}. ${esc(c.nombre)}</span><b style="color:${col(f.notas[i])}">${f.notas[i]}</b></div>`).join("")}
+        <div style="margin-top:8px;font-size:.85rem"><b>Aprendices:</b> ${(f.aprendices || []).map(a => `${a.si ? "✅" : "⬜"} ${esc(a.n)}`).join(" · ") || "–"}</div>
+        <div style="margin-top:6px;font-size:.85rem"><b>Observaciones:</b> ${esc(f.obs || "–")}</div></details>`).join("")}</div>`;
+      $("dash").style.setProperty("--a", APR);
+      $("dash").innerHTML = `
+  <div class="kpis"><div class="kpi"><b>${R.length}/${Math.max(total, R.length)}</b><span>Empresas con evaluación</span></div>
+   <div class="kpi"><b>${filas.length}</b><span>Evaluaciones recibidas</span></div>
+   <div class="kpi"><b style="color:${col(prom(R.map(r => r.avg)))}">${prom(R.map(r => r.avg)).toFixed(1)}</b><span>Promedio general</span></div>
+   <div class="kpi"><b style="color:#0fb57a">${aprueban}</b><span>Empresas que aprueban (≥ ${APR})</span></div></div>
+  <div class="box"><h3>🏆 Ranking de empresas</h3>${R.map((r, i) => `<div class="rk"><div><b style="text-align:left">${i + 1}.</b> Empresa No ${r.n}<small>${esc(r.nom)} · ${r.ev} evaluador${r.ev > 1 ? "es" : ""}</small></div><div class="bar"><i style="width:${r.avg}%;background:${col(r.avg)}"></i></div><b style="color:${col(r.avg)}">${r.avg.toFixed(1)}</b></div>`).join("")}
+   ${pend.length ? `<p style="margin:14px 0 0;font-size:.85rem;color:var(--mut)">Sin evaluar aún: ${pend.map(p => `<span class="pend">Empresa No ${p.numero}</span>`).join("")}</p>` : ""}</div>
+  <div class="box"><h3>🔥 Mapa de calor por aspecto <small style="font-weight:400;color:var(--mut)">(pasa el mouse o toca el número para ver el aspecto)</small></h3><div class="heat"><table><tr><th></th>${CRIT.map((c, i) => `<th data-t="${i + 1}. ${esc(c.nombre)}">${i + 1}</th>`).join("")}<th>Verdes</th></tr>
+   ${R.map(r => `<tr><td><b>Empresa No ${r.n}</b></td>${r.cat.map(v => `<td class="${v >= APR ? "ok" : "ko"}">${v.toFixed(0)}</td>`).join("")}<td class="na">${r.verdes.toFixed(0)}/${CRIT.length}</td></tr>`).join("")}</table></div></div>
+  <div class="two"><div class="box"><h3>✅ Aspectos mejor calificados</h3>${li(critAvg.slice(0, 3))}</div><div class="box"><h3>⚠️ Aspectos por reforzar</h3>${li(critAvg.slice(-3).reverse())}</div></div>
+  <div class="box" style="margin-top:16px"><h3>🧑‍⚖️ Avance por evaluador</h3>${Object.keys(porInst).sort((a, b) => a - b).map(k => `<div class="rk"><div>${+k ? "Evaluador No " + k : "Administrador"}</div><div class="bar np"><i style="width:${Math.min(100, porInst[k].size / Math.max(total, 1) * 100)}%;background:var(--vio)"></i></div><b style="font-size:.9rem">${porInst[k].size}/${total}</b></div>`).join("")}</div>${todas}`;
+    }
+
+    // Mensaje flotante del mapa de calor (el atributo title no siempre se muestra)
+    const tip = $("tip");
+    document.addEventListener("mouseover", e => { const t = e.target.closest("[data-t]"); if (!t) { tip.style.display = "none"; return; } tip.textContent = t.dataset.t; tip.style.display = "block"; });
+    document.addEventListener("mousemove", e => { if (tip.style.display === "block") { tip.style.left = Math.max(8, Math.min(e.clientX + 14, innerWidth - 320)) + "px"; tip.style.top = (e.clientY + 18) + "px"; } });
+    document.addEventListener("click", e => { const t = e.target.closest("[data-t]"); if (t) { tip.textContent = t.dataset.t; tip.style.display = "block"; tip.style.left = "12px"; tip.style.top = (e.clientY + 18) + "px"; } else tip.style.display = "none"; });
+
+    // ===== ADMINISTRAR EMPRESAS (solo administrador, desde la pantalla de las fichas) =====
+    let EM = [];
+    $("bEmp").onclick = async () => {
+      const b = $("empBox"); if (!b.classList.contains("hide")) return b.classList.add("hide");
+      if (S.local) EM = empLocal();
+      else {
+        b.innerHTML = "Cargando…"; b.classList.remove("hide");
+        const r = await api({ action: "adminListar", cedula: S.ced });
+        if (!r.ok) return b.innerHTML = `<div class="msg err">${esc(r.mensaje || "No se pudo cargar.")}</div>`;
+        EM = r.empresas;
+      }
+      pintarEmp(); b.classList.remove("hide");
+    };
+    function pintarEmp() {
+      $("empBox").innerHTML = `<h3>🏢 Administrar empresas</h3><p class="sub" style="margin-top:-6px">Cambia el nombre, desactiva, quita o agrega empresas. Al terminar pulsa Guardar empresas.</p>
+        ${EM.map((e, i) => `<div class="ar em"><b>No ${e.numero}</b><input type="text" data-i="${i}" data-k="nombre" value="${esc(e.nombre)}" placeholder="Nombre de la empresa"><label class="chk"><input type="checkbox" data-i="${i}" data-k="activa" ${e.activa ? "checked" : ""}> Activa</label><button class="x" data-del="${i}" title="Quitar">🗑</button></div>`).join("")}
+        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:6px"><button class="btn ghost" data-add="1">+ Agregar empresa</button><button class="btn" id="bEmpG">💾 Guardar empresas</button></div><div id="mE" class="msg"></div>`;
+      $("bEmpG").onclick = guardarEmp;
+    }
+    $("empBox").addEventListener("input", e => { const t = e.target; if (t.dataset.k) EM[+t.dataset.i][t.dataset.k] = t.type === "checkbox" ? t.checked : t.value; });
+    $("empBox").addEventListener("click", e => {
+      const b = e.target.closest("[data-del],[data-add]"); if (!b) return;
+      if (b.dataset.del) { if (!confirm("¿Quitar esta empresa de la lista?")) return; EM.splice(+b.dataset.del, 1); }
+      else EM.push({ numero: Math.max(0, ...EM.map(x => +x.numero || 0)) + 1, nombre: "", activa: true });
+      pintarEmp();
+    });
+    async function guardarEmp() {
+      const lista = EM.map(e => ({ ...e, nombre: String(e.nombre).trim().replace(/\s+/g, " ") })).filter(e => e.nombre);
+      if (!lista.some(e => e.activa)) return msg("mE", "Debe haber al menos una empresa activa con nombre.");
+      $("bEmpG").disabled = true;
+      if (S.local) {
+        try { localStorage.setItem("feriaTHlocalEmp", JSON.stringify(lista)); } catch (e) { }
+        S.pymes = lista.filter(e => e.activa).map(e => ({ numero: e.numero, nombre: e.nombre, evaluada: false }));
+      } else {
+        const r = await api({ action: "adminGuardar", cedula: S.ced, empresas: lista });
+        if (!r.ok) { $("bEmpG").disabled = false; return msg("mE", r.mensaje || "No se pudo guardar."); }
+        const b = await api({ action: "actualizar", cedula: S.ced }); if (b.ok) aplicar(b);
+      }
+      EM = lista; pintarPymes(); pintarEmp(); msg("mE", S.local ? "Empresas guardadas solo en este navegador (modo temporal) ✔" : "Empresas guardadas en Google Sheets ✔", "ok");
+    }
+
+    // Carga el listado de empresas y aprendices (nombres de empresa + hasta 6 aprendices por empresa)
+    $("bLoadEA").onclick = async () => {
+      if (!confirm("Se pondrán los nombres de las empresas del listado y se reemplazarán los aprendices actuales por los del listado.\n¿Continuar?")) return;
+      const b = $("bLoadEA"), lote = {}; LISTADO.forEach(x => lote[x[0]] = x[2].slice());
+      const unir = emp => { LISTADO.forEach(x => { const e = emp.find(y => +y.numero === x[0]); if (e) e.nombre = x[1]; else emp.push({ numero: x[0], nombre: x[1], activa: true }); }); return emp; };
+      b.disabled = true; b.textContent = "Cargando…"; msg("m2", "");
+      if (S.local) {
+        const emp = unir(empLocal());
+        try { localStorage.setItem("feriaTHlocalEmp", JSON.stringify(emp)); localStorage.setItem("feriaTHlocal", JSON.stringify(lote)); } catch (e) { }
+        S.pymes = emp.filter(e => e.activa).map(e => ({ numero: e.numero, nombre: e.nombre, evaluada: false })); S.apr = lote;
+      } else {
+        const l = await api({ action: "adminListar", cedula: S.ced });
+        const r1 = l.ok ? await api({ action: "adminGuardar", cedula: S.ced, empresas: unir(l.empresas) }) : l;
+        const r2 = r1.ok ? await api({ action: "guardarAprendicesLote", cedula: S.ced, listado: lote }) : r1;
+        if (!r2.ok) { b.disabled = false; b.textContent = "📥 Cargar empresas y aprendices del listado"; return msg("m2", r2.mensaje || "No se pudo cargar el listado."); }
+        const base = await api({ action: "actualizar", cedula: S.ced }); if (base.ok) aplicar(base);
+      }
+      b.disabled = false; b.textContent = "📥 Cargar empresas y aprendices del listado"; $("empBox").classList.add("hide"); pintarPymes();
+      msg("m2", S.local ? "Listado cargado solo en este navegador (modo temporal) ✔" : "Listado cargado en Google Sheets ✔", "ok");
+    };
+
+    // ===== ADMINISTRAR EVALUADORES (solo administrador, desde la pantalla de las fichas) =====
+    let EV = [];
+    $("bEv").onclick = async () => {
+      const b = $("evBox"); if (!b.classList.contains("hide")) return b.classList.add("hide");
+      if (S.local) EV = evLocal();
+      else {
+        b.innerHTML = "Cargando…"; b.classList.remove("hide");
+        const r = await api({ action: "adminListar", cedula: S.ced });
+        if (!r.ok) return b.innerHTML = `<div class="msg err">${esc(r.mensaje || "No se pudo cargar.")}</div>`;
+        EV = r.evaluadores;
+      }
+      pintarEv(); b.classList.remove("hide");
+    };
+    function pintarEv() {
+      $("evBox").innerHTML = `<h3>🧑‍⚖️ Administrar evaluadores</h3><p class="sub" style="margin-top:-6px">${S.local ? "Modo temporal: se guardan solo en este navegador; para que lleguen a Google Sheets primero hay que publicar el script nuevo." : "Lo que guardes aquí se refleja en la hoja Evaluadores de Google Sheets."} Escribe la cédula solo con números.</p>
+        ${EV.map((e, i) => `<div class="ar ev"><input type="text" data-i="${i}" data-k="nombre" value="${esc(e.nombre)}" placeholder="Nombre"><input type="text" inputmode="numeric" data-i="${i}" data-k="cedula" value="${esc(e.cedula)}" placeholder="Cédula"><input type="text" data-i="${i}" data-k="aspecto" value="${esc(e.aspecto || "")}" placeholder="Aspecto asignado"><select data-i="${i}" data-k="rol"><option value="EVALUADOR"${e.rol !== "ADMIN" ? " selected" : ""}>Evaluador</option><option value="ADMIN"${e.rol === "ADMIN" ? " selected" : ""}>Administrador</option></select><label class="chk"><input type="checkbox" data-i="${i}" data-k="activo" ${e.activo ? "checked" : ""}> Activo</label><button class="x" data-del="${i}" title="Quitar">🗑</button></div>`).join("")}
+        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:6px"><button class="btn ghost" data-add="1">+ Agregar evaluador</button><button class="btn ghost" data-load="1">📥 Cargar listado de jurados</button><button class="btn" id="bEvG">💾 Guardar evaluadores</button></div><div id="mV" class="msg"></div>`;
+      $("bEvG").onclick = guardarEv;
+    }
+    $("evBox").addEventListener("input", e => { const t = e.target; if (t.dataset.k) EV[+t.dataset.i][t.dataset.k] = t.type === "checkbox" ? t.checked : t.value; });
+    $("evBox").addEventListener("click", e => {
+      const b = e.target.closest("[data-del],[data-add],[data-load]"); if (!b) return;
+      if (b.dataset.load) { const r = mezclarJurados(EV); pintarEv(); return msg("mV", `Listado cargado: ${r.nuevos} jurados nuevos y ${r.act} actualizados. Revisa y pulsa Guardar evaluadores para enviarlos${S.local ? " (solo a este navegador en modo temporal)" : " a Google Sheets"}.`, "ok"); }
+      if (b.dataset.del) { if (!confirm("¿Quitar este evaluador de la lista?")) return; EV.splice(+b.dataset.del, 1); }
+      else EV.push({ numero: Math.max(0, ...EV.map(x => +x.numero || 0)) + 1, nombre: "", cedula: "", activo: true, rol: "EVALUADOR", aspecto: "" });
+      pintarEv();
+    });
+    async function guardarEv() {
+      const lista = EV.map(e => ({ ...e, nombre: String(e.nombre).trim().replace(/\s+/g, " "), cedula: String(e.cedula).replace(/\D/g, "") })).filter(e => e.nombre || e.cedula);
+      if (lista.some(e => !e.nombre || e.cedula.length < 5)) return msg("mV", "Cada evaluador necesita nombre y cédula (mínimo 5 números).");
+      if (new Set(lista.map(e => e.cedula)).size !== lista.length) return msg("mV", "Hay cédulas repetidas.");
+      if (!lista.some(e => e.rol === "ADMIN" && e.activo)) return msg("mV", "Debe quedar al menos un administrador activo.");
+      $("bEvG").disabled = true;
+      if (S.local) { try { localStorage.setItem("feriaTHlocalEv", JSON.stringify(lista)); } catch (e) { } }
+      else {
+        const r = await api({ action: "adminGuardar", cedula: S.ced, evaluadores: lista });
+        if (!r.ok) { $("bEvG").disabled = false; return msg("mV", r.mensaje || "No se pudo guardar."); }
+      }
+      EV = lista; pintarEv(); msg("mV", S.local ? "Evaluadores guardados solo en este navegador (modo temporal) ✔" : "Evaluadores guardados en Google Sheets ✔", "ok");
+    }
+
+    // ===== ADMINISTRACIÓN =====
+    $("tA").onclick = cargarAdmin;
+    async function cargarAdmin() {
+      go(6); if (S.local) return $("adm").innerHTML = "<div class='panel'><h3>Disponible al actualizar el script</h3><p class='sub'>La administración de evaluadores, empresas y aspectos lee y guarda en Google Sheets. Cuando el script nuevo esté publicado, entra de nuevo y aparecerá completa.</p></div>"; $("adm").innerHTML = "<div class='panel'>Cargando…</div>";
+      const r = await api({ action: "adminListar", cedula: S.ced });
+      if (!r.ok) return $("adm").innerHTML = `<div class='panel'><div class='msg err'>${esc(r.mensaje || "No se pudo cargar.")}</div></div>`;
+      AD = { apr: r.aprobatoria, ev: r.evaluadores, em: r.empresas, as: r.aspectos.map(t => ({ t })) }; pintarAdmin();
+    }
+    function pintarAdmin() {
+      const I = (l, i, k, v, ph) => `<input type="text" data-l="${l}" data-i="${i}" data-k="${k}" value="${esc(v)}" placeholder="${ph}">`;
+      const C = (l, i, k, v, t) => `<label class="chk"><input type="checkbox" data-l="${l}" data-i="${i}" data-k="${k}" ${v ? "checked" : ""}> ${t}</label>`;
+      const X = (l, i) => `<button class="x" data-del="${l}" data-i="${i}" title="Quitar">🗑</button>`;
+      $("adm").innerHTML = `
+      <div class="box"><h3>🎯 Nota aprobatoria</h3><input type="number" min="1" max="100" data-l="x" data-k="apr" value="${AD.apr}" style="max-width:120px"></div>
+      <div class="box"><h3>🧑‍⚖️ Evaluadores</h3>${AD.ev.map((e, i) => `<div class="ar ev">${I("ev", i, "nombre", e.nombre, "Nombre")}${I("ev", i, "cedula", e.cedula, "Cédula")}${I("ev", i, "aspecto", e.aspecto || "", "Aspecto asignado")}<select data-l="ev" data-i="${i}" data-k="rol"><option value="EVALUADOR"${e.rol !== "ADMIN" ? " selected" : ""}>Evaluador</option><option value="ADMIN"${e.rol === "ADMIN" ? " selected" : ""}>Administrador</option></select>${C("ev", i, "activo", e.activo, "Activo")}${X("ev", i)}</div>`).join("")}<button class="btn ghost" data-add="ev">+ Agregar evaluador</button></div>
+      <div class="box"><h3>🏢 Empresas</h3>${AD.em.map((e, i) => `<div class="ar em"><b>No ${e.numero}</b>${I("em", i, "nombre", e.nombre, "Nombre de la empresa")}${C("em", i, "activa", e.activa, "Activa")}${X("em", i)}</div>`).join("")}<button class="btn ghost" data-add="em">+ Agregar empresa</button></div>
+      <div class="box"><h3>📋 Aspectos a evaluar</h3><p class="sub" style="margin-top:-6px">Con evaluaciones guardadas solo puedes editar el texto; para cambiar la cantidad usa primero «Borrar todo».</p>${AD.as.map((a, i) => `<div class="ar as">${I("as", i, "t", a.t, "Aspecto")}${X("as", i)}</div>`).join("")}<button class="btn ghost" data-add="as">+ Agregar aspecto</button></div>
+      <button class="btn" id="bAdm">💾 Guardar cambios</button><div id="mAd" class="msg"></div>`;
+      $("bAdm").onclick = guardarAdmin;
+    }
+    $("adm").addEventListener("input", e => { const t = e.target, l = t.dataset.l; if (!l) return; const v = t.type === "checkbox" ? t.checked : t.value; if (l === "x") AD.apr = v; else AD[l][+t.dataset.i][t.dataset.k] = v; });
+    $("adm").addEventListener("click", e => {
+      const b = e.target.closest("[data-del],[data-add]"); if (!b) return;
+      if (b.dataset.del) AD[b.dataset.del].splice(+b.dataset.i, 1);
+      else { const l = b.dataset.add, mx = Math.max(0, ...(AD[l] || []).map(x => +x.numero || 0)) + 1;
+        AD[l].push(l === "ev" ? { numero: mx, nombre: "", cedula: "", activo: true, rol: "EVALUADOR", aspecto: "" } : l === "em" ? { numero: mx, nombre: "", activa: true } : { t: "" }); }
+      pintarAdmin();
+    });
+    async function guardarAdmin() {
+      const b = $("bAdm"); b.disabled = true; b.textContent = "Guardando…";
+      const r = await api({ action: "adminGuardar", cedula: S.ced, aprobatoria: AD.apr, evaluadores: AD.ev, empresas: AD.em, aspectos: AD.as.map(x => x.t) });
+      b.disabled = false; b.textContent = "💾 Guardar cambios";
+      if (!r.ok) return msg("mAd", r.mensaje || "No se pudo guardar.");
+      const base = await api({ action: "actualizar", cedula: S.ced }); if (base.ok) aplicar(base);
+      msg("mAd", "Cambios guardados en Google Sheets ✔", "ok");
+    }
+
+  </script>
+</body>
+
+</html>
